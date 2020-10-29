@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GeorgeBortov/cordova-plugin-braintree-3ds"
+    "url": "https://github.com/Tun2U/cordova-plugin-braintree-3ds"
   },
   "name": "cordova-plugin-braintree-3ds",
   "dependencies": {
