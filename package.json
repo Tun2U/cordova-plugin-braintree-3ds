@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-braintree-3ds",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A Cordova plugin for the Braintree mobile payment processing SDK with 3D secure and Data Collecting.",
   "cordova": {
     "id": "cordova-plugin-braintree-3ds",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MedITSolutionsKurman/cordova-plugin-braintree-3ds.git"
+    "url": "git+https://github.com/Tun2U/cordova-plugin-braintree-3ds.git"
   },
   "keywords": [
     "cordova",
@@ -33,14 +33,12 @@
   "main": "index.js",
   "author": "MedIT Solutions, fork Taracque and Engineerapart",
   "private": false,
-  "bugs": {
-    "url": "https://github.com/MedITSolutionsKurman/cordova-plugin-braintree-3ds/issues"
-  },
-  "homepage": "https://github.com/MedITSolutionsKurman/cordova-plugin-braintree-3ds#readme",
-  "directories": {
-    "lib": "lib"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tun2U/cordova-plugin-braintree-3ds.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  }
+  },
+  "version": "1.0.8"
 }

@@ -12,9 +12,9 @@ var Braintree = /** @class */ (function (_super) {
     Braintree.pluginName = "Braintree";
     Braintree.plugin = "cordova-plugin-braintree-3ds";
     Braintree.pluginRef = "BraintreePlugin";
-    Braintree.repo = "https://github.com/MedITSolutionsKurman/cordova-plugin-braintree-3ds";
+    Braintree.repo = "https://github.com/GeorgeBortov/cordova-plugin-braintree-3ds";
     Braintree.platforms = ["Android", "iOS"];
-    Braintree.install = "ionic cordova plugin add https://github.com/MedITSolutionsKurman/cordova-plugin-braintree-3ds";
+    Braintree.install = "ionic cordova plugin add https://github.com/GeorgeBortov/cordova-plugin-braintree-3ds";
     Braintree.installVariables = [];
     Braintree = __decorate([
         Injectable()

@@ -4,6 +4,8 @@ import android.util.Log;
 import android.app.Activity;
 import android.content.Intent;
 
+import androidx.annotation.Nullable;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
@@ -32,7 +34,7 @@ import com.google.android.gms.wallet.WalletConstants;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.sentry.util.Nullable;
+//import io.sentry.util.Nullable;
 
 public final class BraintreePlugin extends CordovaPlugin implements PaymentMethodNonceCreatedListener, BraintreeErrorListener {
 
@@ -170,7 +172,7 @@ public final class BraintreePlugin extends CordovaPlugin implements PaymentMetho
             String primaryDescription = args.getString(1);
 
             JSONObject threeDSecure = args.getJSONObject(2);
-            JSONObject googlePay = args.getJSONObject(3);
+
 
             if (threeDSecure == null) {
                 _callbackContext.error("threeDSecure is required.");
@@ -186,7 +188,9 @@ public final class BraintreePlugin extends CordovaPlugin implements PaymentMetho
             dropInRequest.vaultManager(true);
             dropInRequest.threeDSecureRequest(threeDSecureRequest);
 
-            if (googlePay != null) {
+            Object obj = args.get(3);
+            if (obj != null && !obj.toString().equals("null")) {
+                JSONObject googlePay = args.getJSONObject(3);
                 enableGooglePay(dropInRequest, amount, googlePay.getString("currency"), googlePay.getString("merchantId"));
             }
 
@@ -241,6 +245,12 @@ public final class BraintreePlugin extends CordovaPlugin implements PaymentMetho
                 }
 
                 Log.i(TAG, "DropIn Activity Result: paymentMethodNonce = " + paymentMethodNonce);
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Map<String, Object> resultMap = new HashMap<String, Object>();
+                resultMap.put("userCancelled", true);
+                _callbackContext.success(new JSONObject(resultMap));
+                _callbackContext = null;
+                return;
             }
 
             // handle errors here, an exception may be available in
@@ -299,11 +309,13 @@ public final class BraintreePlugin extends CordovaPlugin implements PaymentMetho
             _callbackContext.error("Result was not RESULT_CANCELED, but no PaymentMethodNonce was returned from the Braintree SDK (was " + resultCode + ").");
             _callbackContext = null;
             return;
+        } else {
+            Map<String, Object> resultMap = this.getPaymentUINonceResult(paymentMethodNonce, deviceData);
+            _callbackContext.success(new JSONObject(resultMap));
+            _callbackContext = null;
         }
 
-        Map<String, Object> resultMap = this.getPaymentUINonceResult(paymentMethodNonce, deviceData);
-        _callbackContext.success(new JSONObject(resultMap));
-        _callbackContext = null;
+
     }
 
     /**

@@ -50,6 +50,7 @@ This will ensure that the script ALWAYS runs no matter what platform you are pre
 
 You can check that the script exists by opening your project in Xcode and going to `Your Project -> Build Phases` and looking for the `[cordova-plugin-braintree]: Run Script -- Strip architectures` shell script entry. If it is there, you are golden; otherwise, you'll need to run `cordova prepare`.
 
+IMPORTANT! Merge your application inside your config.xml `<edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application"><application android:theme="@style/Theme.AppCompat.Light" /></edit-config>`.
 
 # Usage
 

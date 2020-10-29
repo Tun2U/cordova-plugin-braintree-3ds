@@ -5,19 +5,15 @@
 //
 
 #import "BraintreePlugin.h"
-#import <objc/runtime.h>
-#import <BraintreeDropIn/BraintreeDropIn.h>
-#import <BraintreeDropIn/BTDropInController.h>
-#import <BraintreeCore/BTAPIClient.h>
-#import <BraintreeCore/BTPaymentMethodNonce.h>
-#import <BraintreeCard/BTCardNonce.h>
-#import <BraintreePayPal/BraintreePayPal.h>
-#import <BraintreeApplePay/BraintreeApplePay.h>
-#import <Braintree3DSecure/Braintree3DSecure.h>
-#import <BraintreeVenmo/BraintreeVenmo.h>
-#import "AppDelegate.h"
-#import <BraintreeDataCollector/BraintreeDataCollector.h>
-#import <BraintreePaymentFlow/BraintreePaymentFlow.h>
+#import "Braintree/BraintreeCore.h"
+#import "BraintreeDropIn/BraintreeDropIn.h"
+#import "Braintree/BraintreeCard.h"
+#import "Braintree/BraintreeDataCollector.h"
+#import "Braintree/BraintreeVenmo.h"
+#import "Braintree/BraintreePaymentFlow.h"
+#import "Braintree/BraintreePayPal.h"
+#import "Braintree/BraintreeApplePay.h"
+#import "Braintree/PayPalDataCollector.h"
 
 @interface BraintreePlugin() <PKPaymentAuthorizationViewControllerDelegate>
 
@@ -28,6 +24,7 @@
 @property NSString* token;
 
 @end
+
 
 @implementation BraintreePlugin
 
@@ -171,8 +168,7 @@ NSString *countryCode;
     /* Drop-IN 5.0 */
     BTDropInRequest *paymentRequest = [[BTDropInRequest alloc] init];
     paymentRequest.applePayDisabled = !applePayInited;
-    paymentRequest.vaultManager = YES;
-
+    
     paymentRequest.threeDSecureVerification = YES;
     BTThreeDSecureRequest *threeDSecureRequest = [[BTThreeDSecureRequest alloc] init];
     threeDSecureRequest.amount = [NSDecimalNumber decimalNumberWithString:amount];
@@ -258,7 +254,7 @@ NSString *countryCode;
 }
 
 #pragma mark - PKPaymentAuthorizationViewControllerDelegate
-- (void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController *)controller didAuthorizePayment:(PKPayment *)payment completion:(void (^)(PKPaymentAuthorizationStatus status))completion {
+- (void)paymentAuthorizationViewController:(PKPaymentAuthorizationViewController *)controller didAuthorizePayment:(PKPayment *)payment hendler:(void (^)(PKPaymentAuthorizationResult *status))completion {
     applePaySuccess = YES;
 
     BTApplePayClient *applePayClient = [[BTApplePayClient alloc] initWithAPIClient:self.braintreeClient];
@@ -274,7 +270,7 @@ NSString *countryCode;
             dropInUIcallbackId = nil;
 
             // Then indicate success or failure via the completion callback, e.g.
-            completion(PKPaymentAuthorizationStatusSuccess);
+            completion([[PKPaymentAuthorizationResult alloc] initWithStatus:PKPaymentAuthorizationStatusSuccess errors:nil]);
         } else {
             // Tokenization failed. Check `error` for the cause of the failure.
             CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Apple Pay tokenization failed"];
@@ -283,7 +279,7 @@ NSString *countryCode;
             dropInUIcallbackId = nil;
 
             // Indicate failure via the completion callback:
-            completion(PKPaymentAuthorizationStatusFailure);
+            completion([[PKPaymentAuthorizationResult alloc] initWithStatus:PKPaymentAuthorizationStatusSuccess errors:nil]);
         }
     }];
 }
@@ -315,7 +311,6 @@ NSString *countryCode;
     BTCardNonce *cardNonce;
     BTPayPalAccountNonce *payPalAccountNonce;
     BTApplePayCardNonce *applePayCardNonce;
-    BTThreeDSecureCardNonce *threeDSecureCardNonce;
     BTVenmoAccountNonce *venmoAccountNonce;
 
     if ([paymentMethodNonce isKindOfClass:[BTCardNonce class]]) {
@@ -328,10 +323,6 @@ NSString *countryCode;
 
     if ([paymentMethodNonce isKindOfClass:[BTApplePayCardNonce class]]) {
         applePayCardNonce = (BTApplePayCardNonce*)paymentMethodNonce;
-    }
-
-    if ([paymentMethodNonce isKindOfClass:[BTThreeDSecureCardNonce class]]) {
-        threeDSecureCardNonce = (BTThreeDSecureCardNonce*)paymentMethodNonce;
     }
 
     if ([paymentMethodNonce isKindOfClass:[BTVenmoAccountNonce class]]) {
@@ -365,12 +356,6 @@ NSString *countryCode;
 
                                   // BTApplePayCardNonce
                                   @"applePayCard": !applePayCardNonce ? [NSNull null] : @{
-                                          },
-
-                                  // BTThreeDSecureCardNonce Fields
-                                  @"threeDSecureInfo": !threeDSecureCardNonce ? [NSNull null] : @{
-                                          @"liabilityShifted": threeDSecureCardNonce.liabilityShifted ? @YES : @NO,
-                                          @"liabilityShiftPossible": threeDSecureCardNonce.liabilityShiftPossible ? @YES : @NO
                                           },
 
                                   // BTThreeDSecureCardNonce Fields
@@ -439,4 +424,3 @@ NSString *countryCode;
 }
 
 @end
-

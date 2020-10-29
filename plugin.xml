@@ -33,16 +33,15 @@
         <framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />
 
         <config-file target="AndroidManifest.xml" parent="application">
-            <activity android:name="com.braintreepayments.api.threedsecure.ThreeDSecureWebViewActivity" />
-            <activity android:name="com.braintreepayments.api.BraintreePaymentActivity" />
-			<activity android:name="com.braintreepayments.api.BraintreeBrowserSwitchActivity" android:launchMode="singleTask">
-				<intent-filter>
-					<action android:name="android.intent.action.VIEW" />
-					<category android:name="android.intent.category.DEFAULT" />
-					<category android:name="android.intent.category.BROWSABLE" />
-					<data android:scheme="${applicationId}.braintree" />
-				</intent-filter>
-			</activity>
+            <!-- TODO merge your <application [...] android:theme="@style/Theme.AppCompat.Light" [...] in app/src/main/AndroidManifest.xml inside your config.xml -->
+            <activity android:name="com.braintreepayments.api.BraintreeBrowserSwitchActivity" android:launchMode="singleTask">
+                <intent-filter>
+                    <action android:name="android.intent.action.VIEW"/>
+                    <category android:name="android.intent.category.DEFAULT"/>
+                    <category android:name="android.intent.category.BROWSABLE"/>
+                    <data android:scheme="${applicationId}.braintree"/>
+                </intent-filter>
+            </activity>
         </config-file>
 
     </platform>
@@ -51,9 +50,9 @@
     <platform name="ios">
 
 	<!-- Hook to embed iOS frameworks after ios platform added -->
-	    <hook type="after_platform_add" src="scripts/add_embedded_ios_frameworks.js" />
+	    <!-- <hook type="after_platform_add" src="scripts/add_embedded_ios_frameworks.js" /> -->
 	<!-- Hook to embed iOS frameworks after installation -->
-	    <hook type="after_plugin_install" src="scripts/add_embedded_ios_frameworks.js" />
+	    <!-- <hook type="after_plugin_install" src="scripts/add_embedded_ios_frameworks.js" /> -->
 
         <config-file target="config.xml" parent="/*">
             <feature name="BraintreePlugin">
@@ -84,24 +83,21 @@
 
         <header-file src="src/ios/BraintreePlugin.h" />
         <source-file src="src/ios/BraintreePlugin.m" />
-
-        <framework src="lib/ios/Braintree3DSecure.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/BraintreeAmericanExpress.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/BraintreeApplePay.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/BraintreeCard.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/BraintreeCore.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/BraintreeDataCollector.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/BraintreeDropIn.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/BraintreePaymentFlow.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/BraintreePayPal.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/BraintreeUI.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/BraintreeUIKit.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/BraintreeUnionPay.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/BraintreeVenmo.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/CardinalMobile.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/PayPalDataCollector.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/PayPalOneTouch.framework" custom="true" embed="true" weak="false" />
-        <framework src="lib/ios/PayPalUtils.framework" custom="true" embed="true" weak="false" />
+        <header-file src="src/ios/AppDelegate+Braintree.h" />
+        <source-file src="src/ios/AppDelegate+Braintree.m" />
+        <podspec>
+            <config>
+                <source url="https://cdn.cocoapods.org/"/>
+            </config>
+            <pods use-frameworks="true">
+                <pod name="BraintreeDropIn" spec="8.1.1"/>
+                <pod name="Braintree" spec="4.36.0"/>
+                <pod name="Braintree/DataCollector" spec="4.36.0"/>
+                <pod name="Braintree/Apple-Pay" spec="4.36.0"/>
+                <pod name="Braintree/Venmo" spec="4.36.0"/>
+                <pod name="Braintree/PaymentFlow" spec="4.36.0"/>
+            </pods>
+        </podspec>
 
     </platform>
 
